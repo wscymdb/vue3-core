@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script type="module">
+    import { reactive } from '../packages/reactivity/dist/reactivity.js'
+
+    const obj = {
+      name: 'zs',
+      age: 19
+    }
+    const proxyObj1 = reactive(obj)
+    const proxyObj2 = reactive(proxyObj1)
+
+
+    console.log(proxyObj1, proxyObj2)
+
+
+
+
+  </script>
+</body>
+
+</html>

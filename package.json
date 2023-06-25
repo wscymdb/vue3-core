@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "vue3-pnpm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node scripts/dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.18.7"
+  },
+  "dependencies": {
+    "vue": "^3.3.4"
+  }
+}
