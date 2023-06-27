@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { reactive, effect } from '../packages/reactivity/dist/reactivity.js'
+    // import { reactive, effect } from '../node_modules/@vue/reactivity/dist/reactivity.esm-browser.js'
+
+    const obj = reactive({
+      name: 'zs',
+      age: 19,
+      address: 'zj'
+    })
+    // const proxyObj1 = reactive(obj)
+
+    // effect(() => {
+    //   app.innerHTML = proxyObj1.name
+    //   // effect(() => {
+    //   //   app.innerHTML += proxyObj1.age
+    //   // })
+    //   proxyObj1.address
+    // })
+
+    effect(() => {
+
+      obj.name = Math.random()
+      app.innerHTML = obj.name
+      // effect(() => {
+      //   app.innerHTML += proxyObj1.age
+      // })
+      // console.log(1)
+      // proxyObj1.address
+    })
+
+    setTimeout(() => {
+      obj.name = 'wzng'
+    }, 2000)
+
+
+
+
+
+  </script>
+</body>
+
+</html>

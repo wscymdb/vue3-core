@@ -1,4 +1,5 @@
 import { isObject } from '@vue/shared'
+import { track, trigger } from './effect'
 
 export const enum ReactiveFlags {
   IS_REACTIVE = '__v_isReactive',
@@ -6,15 +7,22 @@ export const enum ReactiveFlags {
 
 export const mutableHandles = {
   get(target, key, receiver) {
-    // 解决情况一
+    // 解决情况二
     if (!target[ReactiveFlags.IS_REACTIVE])
       target[ReactiveFlags.IS_REACTIVE] = true
+
+    track(target, key)
 
     return Reflect.get(target, key, receiver)
   },
 
   set(target, key, value, receiver) {
-    return Reflect.set(target, key, value, receiver)
+    const oldValue = target[key]
+
+    const r = Reflect.set(target, key, value, receiver)
+
+    if (oldValue !== value) trigger(target, key, value, oldValue)
+    return r
   },
 }
 

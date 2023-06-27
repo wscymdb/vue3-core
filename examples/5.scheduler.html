@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { reactive, effect } from '../packages/reactivity/dist/reactivity.js'
+    // import { reactive, effect } from '../node_modules/@vue/reactivity/dist/reactivity.esm-browser.js'
+
+    const obj = reactive({
+      name: 'zs',
+      age: 19,
+      flag: true
+    })
+
+
+    const runner = effect(() => {
+      app.innerHTML = obj.name
+
+    }, {
+      scheduler() {
+        app.innerHTML = 123
+      }
+    })
+
+    setTimeout(() => {
+      obj.name = 'lisi'
+    }, 2000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>
