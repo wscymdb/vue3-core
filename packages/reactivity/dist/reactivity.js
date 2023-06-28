@@ -6,6 +6,8 @@ var mutableHandles = {
   get(target, key, receiver) {
     if (!target["__v_isReactive" /* IS_REACTIVE */])
       target["__v_isReactive" /* IS_REACTIVE */] = true;
+    if (isObject(target[key]))
+      return reactive(target[key]);
     return Reflect.get(target, key, receiver);
   },
   set(target, key, value, receiver) {

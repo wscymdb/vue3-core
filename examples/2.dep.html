@@ -11,15 +11,13 @@
   <script type="module">
     import { reactive } from '../packages/reactivity/dist/reactivity.js'
 
-    const obj = {
+    const obj = reactive({
       name: 'zs',
-      age: 19
-    }
-    const proxyObj1 = reactive(obj)
-    const proxyObj2 = reactive(proxyObj1)
-
-
-    console.log(proxyObj1, proxyObj2)
+      info: {
+        age: 19
+      }
+    })
+    console.log(obj.info)
 
   </script>
 </body>

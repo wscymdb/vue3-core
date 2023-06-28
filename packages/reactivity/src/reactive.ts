@@ -10,6 +10,10 @@ export const mutableHandles = {
     if (!target[ReactiveFlags.IS_REACTIVE])
       target[ReactiveFlags.IS_REACTIVE] = true
 
+    // 解决情况三
+
+    if (isObject(target[key])) return reactive(target[key])
+
     return Reflect.get(target, key, receiver)
   },
 
@@ -63,4 +67,18 @@ const obj = {
 }
 const proxyObj1 = reactive(obj)
 const proxyObj2 = reactive(proxyObj1)
+*/
+
+// 情况三
+/*
+如下代码 info并不是一个代理对象那么当数据发生变化就不会自动更新 
+原因是 Proxy只能浅层的代理
+解决方案 使用递归代理  在get中判断key是否是对象 如果是则继续用reactive代理
+const obj = {
+  name: 'zs',
+  info: {
+    age: 19
+  }
+}
+console.log(obj.info)
 */
