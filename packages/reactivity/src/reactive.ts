@@ -12,8 +12,10 @@ export const mutableHandles = {
       target[ReactiveFlags.IS_REACTIVE] = true
 
     // 解决情况三
-
     if (isObject(target[key])) return reactive(target[key])
+
+    // 收集依赖
+    track(target, key)
 
     return Reflect.get(target, key, receiver)
   },
@@ -45,6 +47,13 @@ export function reactive(target) {
   // 缓存代理结果 无需重复代理
   reactiveMap.set(target, proxy)
   return proxy
+}
+
+// 判断一个对象时候是响应式的
+// 如果当前对象是一个普通对象是没有is_reactive这个值的
+// 如果是响应式对象 获取is_reactive会触发get 会给当前对象添加这个值
+export function isReactive(value) {
+  return value[ReactiveFlags.IS_REACTIVE]
 }
 
 // 情况一 obj已经被代理过一次了，不需要再次代理，否则会浪费性能

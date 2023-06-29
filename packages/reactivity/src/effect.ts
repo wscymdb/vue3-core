@@ -3,7 +3,6 @@ export let activeEffect = undefined
 
 function cleanupEffect(effect) {
   const { deps } = effect
-  console.log(deps)
   for (let i = 0; i < deps.length; i++) {
     deps[i].delete(effect)
   }
@@ -92,6 +91,8 @@ export function trigger(target, key, newValue, oldValue) {
   if (!depsMap) return
 
   const dep = depsMap.get(key)
+
+  if (!dep) return
 
   // 解决情况四
   const effects = [...dep]
