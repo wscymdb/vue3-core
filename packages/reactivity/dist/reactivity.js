@@ -123,11 +123,11 @@ function isReactive(value) {
 }
 
 // packages/reactivity/src/apiWatch.ts
-function watchEffect(source, options) {
-  return dowatch(source, null, options);
-}
 function watch(source, cb, options) {
   return dowatch(source, cb, options);
+}
+function watchEffect(source, cb, options) {
+  return dowatch(source, null, options);
 }
 function dowatch(source, cb, options) {
   let getter;
@@ -137,10 +137,16 @@ function dowatch(source, cb, options) {
     getter = source;
   }
   let oldVal;
+  let clear;
+  let onCleanup = (fn) => {
+    clear = fn;
+  };
   const job = () => {
     if (cb) {
+      if (clear)
+        clear();
       const newVal = effect2.run();
-      cb(newVal, oldVal);
+      cb(newVal, oldVal, onCleanup);
       oldVal = newVal;
     } else {
       effect2.run();

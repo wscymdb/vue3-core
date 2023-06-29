@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { reactive, watchEffect } from '../packages/reactivity/dist/reactivity.js'
+
+    const obj = reactive({
+      name: 'zs',
+      age: 19,
+
+    })
+
+    watchEffect(() => console.log(obj.name))
+
+    setTimeout(() => {
+      obj.name = '历史'
+    }, 1000);
+
+
+  </script>
+</body>
+
+</html>
