@@ -2,7 +2,7 @@
 // 第一种就是 监听某个函数的返回值  watch(() => obj.age, () => {...})
 // 第二种就是 监听一个响应式对象 watch(obj, () => {...})
 
-import { ifFunction, isObject } from '@vue/shared'
+import { isFunction, isObject } from '@vue/shared'
 import { isReactive } from './reactive'
 import { ReactiveEffect } from './effect'
 
@@ -19,7 +19,7 @@ export function dowatch(source, cb, options) {
   // 如果传入的是响应式对象 那么对该对象中所有的属性进行依赖搜集
   if (isReactive(source)) {
     getter = () => traverse(source)
-  } else if (ifFunction(source)) {
+  } else if (isFunction(source)) {
     getter = source
   }
 

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { reactive, computed, effect } from '../packages/reactivity/dist/reactivity.js'
+
+    const obj = reactive({
+      firstName: '张',
+      lastName: '三'
+    })
+
+    // const name = computed(() => {
+    //   const n = obj.firstName + obj.lastName
+    //   console.log(n)
+    //   return n
+    // })
+
+    const name = computed({
+      get() {
+        const r = obj.firstName + obj.lastName
+        console.log(r)
+        return r
+      },
+      set(value) {
+        console.log(value)
+      }
+    })
+
+    effect(() => {
+      console.log(name)
+      app.innerHTML = name.value
+
+    })
+
+    setTimeout(() => {
+      obj.lastName = '四'
+    }, 2000)
+
+
+
+  </script>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 // packages/shared/src/index.ts
 var isObject = (value) => value !== null && typeof value === "object";
-var ifFunction = (value) => typeof value === "function";
+var isFunction = (value) => typeof value === "function";
 
 // packages/reactivity/src/effect.ts
 var activeEffect = void 0;
@@ -62,6 +62,9 @@ function track(target, key) {
   if (!dep) {
     depsMap.set(key, dep = /* @__PURE__ */ new Set());
   }
+  trackEffects(dep);
+}
+function trackEffects(dep) {
   let shouldTrack = !dep.has(activeEffect);
   if (shouldTrack) {
     dep.add(activeEffect);
@@ -75,6 +78,9 @@ function trigger(target, key, newValue, oldValue) {
   const dep = depsMap.get(key);
   if (!dep)
     return;
+  triggerEffects(dep);
+}
+function triggerEffects(dep) {
   const effects = [...dep];
   effects && effects.forEach((effect2) => {
     if (effect2 !== activeEffect) {
@@ -133,7 +139,7 @@ function dowatch(source, cb, options) {
   let getter;
   if (isReactive(source)) {
     getter = () => traverse(source);
-  } else if (ifFunction(source)) {
+  } else if (isFunction(source)) {
     getter = source;
   }
   let oldVal;
@@ -166,7 +172,49 @@ function traverse(value, seen = /* @__PURE__ */ new Set()) {
   }
   return value;
 }
+
+// packages/reactivity/src/computed.ts
+var ComputedRefImpl = class {
+  constructor(getter, setter) {
+    this.setter = setter;
+    this.dirty = true;
+    // 解决情况一
+    this.dep = /* @__PURE__ */ new Set();
+    this.effect = new ReactiveEffect(getter, () => {
+      if (!this.dirty)
+        this.dirty = true;
+      triggerEffects(this.dep);
+    });
+  }
+  get value() {
+    trackEffects(this.dep);
+    if (this.dirty) {
+      this.dirty = false;
+      this._value = this.effect.run();
+    }
+    return this._value;
+  }
+  set value(value) {
+    this.setter(value);
+  }
+};
+function computed(getterOrOptions) {
+  let setter;
+  let getter;
+  const isGetter = isFunction(getterOrOptions);
+  if (isGetter) {
+    getter = getterOrOptions;
+    setter = function() {
+      console.warn("you maybe need a setter");
+    };
+  } else {
+    getter = getterOrOptions.get;
+    setter = getterOrOptions.set;
+  }
+  return new ComputedRefImpl(getter, setter);
+}
 export {
+  computed,
   dowatch,
   effect,
   reactive,

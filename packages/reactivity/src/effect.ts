@@ -75,6 +75,19 @@ export function track(target, key) {
     depsMap.set(key, (dep = new Set()))
   }
 
+  trackEffects(dep)
+
+  //  这部分其他的地方会需要 所以抽离一个函数trackEffects
+  // // 虽然set是不会重复的 但是内部肯定会做逻辑的 那么如果我们判断一下在加入会提升性能
+  // let shouldTrack = !dep.has(activeEffect)
+  // if (shouldTrack) {
+  //   dep.add(activeEffect)
+  //   // 解决情况四
+  //   activeEffect.deps.push(dep)
+  // }
+}
+
+export function trackEffects(dep) {
   // 虽然set是不会重复的 但是内部肯定会做逻辑的 那么如果我们判断一下在加入会提升性能
   let shouldTrack = !dep.has(activeEffect)
   if (shouldTrack) {
@@ -94,7 +107,26 @@ export function trigger(target, key, newValue, oldValue) {
 
   if (!dep) return
 
-  // 解决情况四
+  triggerEffects(dep)
+  // 下面代码也会被复用  所以抽离成triggerEffects
+  // // 解决情况四
+  // const effects = [...dep]
+
+  // effects &&
+  //   effects.forEach((effect) => {
+  //     // 做个判断 为了防止情况三 的发生
+  //     if (effect !== activeEffect) {
+  //       // 解决情况六
+  //       if (effect.scheduler) {
+  //         effect.scheduler()
+  //       } else {
+  //         effect.run()
+  //       }
+  //     }
+  //   })
+}
+
+export function triggerEffects(dep) {
   const effects = [...dep]
 
   effects &&
